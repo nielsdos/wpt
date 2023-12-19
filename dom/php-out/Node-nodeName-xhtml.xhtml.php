@@ -1,6 +1,6 @@
 <?php define('undefined', 'undefined');require __DIR__.'/../driver.inc.php';
 $html = file_get_contents(__DIR__."/../nodes/Node-nodeName-xhtml.xhtml");
-$document = DOM\HTMLDocument::createFromString($html);
+$document = DOM\XMLDocument::createFromString($html);
 ;
 test(function() {global $document;
   $HTMLNS = "http://www.w3.org/1999/xhtml";
