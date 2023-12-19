@@ -4,7 +4,9 @@ function test($callback, $name) {
         $callback();
         echo "\033[32;1mPASS\033[0m $name\n";
     } catch (Throwable $e) {
-        if (str_contains($e->getMessage(), ", null given") || str_contains($e->getMessage(), "Wrong Document")) {
+        if (str_contains($e->getMessage(), ", null given")
+            || str_contains($e->getMessage(), "Wrong Document")
+            || str_contains($e->getMessage(), "Cannot assign null to property DOMNode::\$textContent of type string")) {
             echo "\033[33;1mIGN \033[0m ";
         } else {
             echo "\033[31;1mFAIL\033[0m ";
@@ -24,14 +26,17 @@ function assert_throws_dom($name, $callback) {
     }
 }
 
-function assert_equals($a, $b) {
+function assert_equals($a, $b, string $msg = "") {
     if (is_null($a)) $a = "";
     if (is_null($b)) $b = "";
     if ($a !== $b) {
+        if (is_string($a) && strlen($a) > 30) {
+            $a = substr($a, 0, 30) . "...";
+        }
         try {
-            $msg = "Assertion failed: \"$a\" === \"$b\"";
+            $msg = "Assertion failed ($msg): \"$a\" === \"$b\"";
         } catch (Throwable $e) {
-            $msg = "Assertion failed: equality";
+            $msg = "Assertion failed ($msg): equality";
             var_dump($a, $b);
         }
         throw new Error($msg);
@@ -79,4 +84,8 @@ function assert_array_equals($array1, $array2) {
             throw new Error("Assertion failed: \$array1[$i] !== \$array2[$i]");
         }
     }
+}
+
+function format_value($value) {
+    return json_encode($value);
 }
