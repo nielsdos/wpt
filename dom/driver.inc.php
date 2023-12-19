@@ -29,7 +29,7 @@ function assert_equals($a, $b) {
     if (is_null($b)) $b = "";
     if ($a !== $b) {
         try {
-            $msg = "Assertion failed: \"$a\" !== \"$b\"";
+            $msg = "Assertion failed: \"$a\" === \"$b\"";
         } catch (Throwable $e) {
             $msg = "Assertion failed: equality";
             var_dump($a, $b);
@@ -40,9 +40,21 @@ function assert_equals($a, $b) {
 
 function assert_true($a) {
     if ($a !== true) {
-        throw new Error("Assertion failed: $a !== true");
+        throw new Error("Assertion failed: $a === true");
     }
 }
+
+function attr_is($attr, $v, $ln, $ns, $p, $n) {
+    assert_equals($attr->value, $v);
+    assert_equals($attr->nodeValue, $v);
+    assert_equals($attr->textContent, $v);
+    assert_equals($attr->localName, $ln);
+    assert_equals($attr->namespaceURI, $ns);
+    assert_equals($attr->prefix, $p);
+    assert_equals($attr->name, $n);
+    assert_equals($attr->nodeName, $n);
+    assert_equals($attr->specified, true);
+  }
 
 function innerHTML($node) {
     $innerHTML = '';
