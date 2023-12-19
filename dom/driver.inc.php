@@ -38,6 +38,12 @@ function assert_equals($a, $b) {
     }
 }
 
+function assert_true($a) {
+    if ($a !== true) {
+        throw new Error("Assertion failed: $a !== true");
+    }
+}
+
 function innerHTML($node) {
     $innerHTML = '';
     foreach ($node->childNodes as $child) {

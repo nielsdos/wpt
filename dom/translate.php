@@ -74,7 +74,7 @@ function translate_file(string $filename) {
     $php = preg_replace("/(\\$[a-zA-Z0-9_]+)->innerHTML/", "innerHTML($1)", $php);
 
     $preamble = "<?php define('undefined', 'undefined');require __DIR__.'/../driver.inc.php';\n";
-    $preamble .= "\$html = file_get_contents(\"$filename\");\n";
+    $preamble .= "\$html = file_get_contents(__DIR__.\"/../$filename\");\n";
     $preamble .= '$document = DOM\HTMLDocument::createFromString($html);' . "\n";
 
     @mkdir("php-out");
