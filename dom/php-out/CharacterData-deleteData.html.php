@@ -80,8 +80,8 @@ function testNode($create, $type) {global $document;
 ;
     $node->data = "🌠 test 🌠 TEST";
 ;
-    $node->deleteData(5, 8);  // Counting UTF-16 code units;
-    assert_equals($node->data, "🌠 teST");
+    $node->deleteData(5, 8);  // DEVIATION: UTF8!!!
+    assert_equals($node->data, "🌠 tes");
   }, $type . "->deleteData() with non-BMP data");
 };
 ;
