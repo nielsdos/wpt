@@ -1,8 +1,5 @@
 <?php
 
-//$files = glob("**/*.js");
-//var_dump($files);
-
 function translate_file(string $filename) {
     $contents = file_get_contents($filename);
     $dom = DOM\HTMLDocument::createFromString($contents);

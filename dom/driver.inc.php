@@ -44,6 +44,12 @@ function assert_true($a) {
     }
 }
 
+function assert_false($a) {
+    if ($a !== false) {
+        throw new Error("Assertion failed: $a === false");
+    }
+}
+
 function attr_is($attr, $v, $ln, $ns, $p, $n) {
     assert_equals($attr->value, $v);
     assert_equals($attr->nodeValue, $v);
