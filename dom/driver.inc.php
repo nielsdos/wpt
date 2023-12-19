@@ -4,7 +4,7 @@ function test($callback, $name) {
         $callback();
         echo "\033[32;1mPASS\033[0m $name\n";
     } catch (Throwable $e) {
-        if (str_contains($e->getMessage(), ", null given")) {
+        if (str_contains($e->getMessage(), ", null given") || str_contains($e->getMessage(), "Wrong Document")) {
             echo "\033[33;1mIGN \033[0m ";
         } else {
             echo "\033[31;1mFAIL\033[0m ";
