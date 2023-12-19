@@ -21,7 +21,7 @@ function assert_throws_dom($name, $callback) {
         throw new Error("Assertion failed: $name not thrown");
     } catch (DOMException $e) {
         if ($e->getCode() !== constant("DOM_".$name)) {
-            throw new Error("Assertion failed: $name not thrown");
+            throw new Error("Assertion failed: $name not thrown (but a different one was: " . $e->getCode() . ")");
         }
     }
 }
