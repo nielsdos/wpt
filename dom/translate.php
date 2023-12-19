@@ -9,7 +9,6 @@ function translate_file(string $filename) {
     foreach ($dom->getElementsByTagName("script") as $script) {
         if (!$script->hasAttribute("src")) {
             $script = $script->textContent;
-            break;
         }
     }
 
