@@ -75,7 +75,7 @@ function testNode($create, $type) {global $document;
 ;
     $node->data = "🌠 test 🌠 TEST";
 ;
-    $node->insertData(5, "--");  // Counting UTF-16 code units;
+    $node->insertData(4, "--");  // DEVIATION: UTF8!!!, Counting UTF-16 code units;
     assert_equals($node->data, "🌠 te--st 🌠 TEST");
   }, $type . "->insertData() with non-BMP data");
 };
