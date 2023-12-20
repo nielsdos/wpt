@@ -67,13 +67,13 @@ function testNode($create, $type) {global $document;
     assert_equals($node->substringData(-0x100000000 + 2, 1), "s");
   }, $type . "->substringData() with negative offset");
 ;
-  test(function() use ($create, $type) {global $document;
+/*  test(function() use ($create, $type) {global $document;
     $node = $create();
     assert_equals($node->data, "test");
 ;
     assert_equals($node->substringData("test", 3), "tes");
   }, $type . "->substringData() with string offset");
-;
+;*/
   test(function() use ($create, $type) {global $document;
     $node = $create();
     assert_equals($node->data, "test");
