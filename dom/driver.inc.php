@@ -29,7 +29,7 @@ function assert_throws_dom($name, $callback) {
 function assert_equals($a, $b, string $msg = "") {
     if (is_null($a)) $a = "";
     if (is_null($b)) $b = "";
-    if ($a instanceof DOMText) {
+    if ($a instanceof DOMText && is_string($b)) {
         $a = $a->wholeText;
     }
     if ($a !== $b) {
