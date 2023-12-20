@@ -108,11 +108,12 @@ foreach ($doctypes as $args) {
 // DocumentFragment, Element:;
 $testArgs = [
   [null, null],
-  [undefined, null],
+  //[undefined, null],
   ["", null],
   [42, "42"],
   ["abc", "abc"],
   ["<b>xyz<\/b>", "<b>xyz<\/b>"],
+  ["d&e", "d&e"],
   //["d\0e", "d\0e"]
   // XXX unpaired surrogate?;
 ];

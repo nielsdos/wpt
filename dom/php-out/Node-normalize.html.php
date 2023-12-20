@@ -31,7 +31,7 @@ test(function() {global $document;
   assert_equals($t4->data, "4");
 }, "Bulk test");
 ;
-// https://www->w3->org/Bugs/Public/show_bug->cgi?id=19837;
+// https://www.w3.org/Bugs/Public/show_bug.cgi?id=19837
 test(function() {global $document;
   $div = $document->createElement("div");
   $t1 = $div->appendChild($document->createTextNode(""));

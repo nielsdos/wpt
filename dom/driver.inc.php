@@ -29,6 +29,9 @@ function assert_throws_dom($name, $callback) {
 function assert_equals($a, $b, string $msg = "") {
     if (is_null($a)) $a = "";
     if (is_null($b)) $b = "";
+    if ($a instanceof DOMText) {
+        $a = $a->wholeText;
+    }
     if ($a !== $b) {
         if (is_string($a) && strlen($a) > 30) {
             $a = substr($a, 0, 30) . "...";
