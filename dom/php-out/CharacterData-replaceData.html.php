@@ -148,7 +148,7 @@ function testNode($create, $type) {global $document;
 ;
     $node->data = "🌠 test 🌠 TEST";
 ;
-    $node->replaceData(5, 8, "--");  // Counting UTF-16 code units;
+    $node->replaceData(4, 7, "--");  // DEVIATION UTF8!!! Counting UTF-16 code units;
     assert_equals($node->data, "🌠 te--ST");
   }, $type . "->replaceData() with non-BMP data");
 };
