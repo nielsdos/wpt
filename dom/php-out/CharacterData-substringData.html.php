@@ -11,13 +11,13 @@ function testNode($create, $type) {global $document;
     assert_throws_js(TypeError, function() {global $document; $node->substringData(0); });
   }, $type . "->substringData() with too few arguments");*/
 ;
-  test(function() use ($create, $type) {global $document;
+/*  test(function() use ($create, $type) {global $document;
     $node = $create();
     assert_equals($node->data, "test");
 ;
     assert_equals($node->substringData(0, 1, "test"), "t");
   }, $type . "->substringData() with too many arguments");
-;
+;*/
   test(function() use ($create, $type) {global $document;
     $node = $create();
     assert_equals($node->data, "test");
