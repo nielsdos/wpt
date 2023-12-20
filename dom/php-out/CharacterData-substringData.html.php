@@ -123,7 +123,7 @@ function testNode($create, $type) {global $document;
 ;
     $node->data = "🌠 test 🌠 TEST";
 ;
-    assert_equals($node->substringData(5, 8), "st 🌠 TE");  // Counting UTF-16 code units;
+    assert_equals($node->substringData(4, 7), "st 🌠 TE");  // DEVIATION: UTF8!!! Counting UTF-16 code units;
   }, $type . "->substringData() with non-BMP data");
 };
 ;
