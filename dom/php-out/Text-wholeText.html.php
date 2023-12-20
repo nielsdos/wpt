@@ -38,5 +38,5 @@ test(function() {
   assert_equals($t1->wholeText, $t1->textContent . $t2->textContent);
   assert_equals($t2->wholeText, $t1->textContent . $t2->textContent);
   assert_equals($t3->wholeText, $t3->textContent);
-}, "wholeText returns text of all Text nodes logically adjacent to the node, in document order->");
+}, "wholeText returns text of all Text nodes logically adjacent to the node, in document order.");
 ;

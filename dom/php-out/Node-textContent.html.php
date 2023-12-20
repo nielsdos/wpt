@@ -166,7 +166,7 @@ foreach ($testArgs as $aValue) {
     $el->textContent = $argument;
     $check($el);
     assert_equals($child->childNodes->length, 3,
-                  "Should not have changed the internal structure of the removed nodes->");
+                  "Should not have changed the internal structure of the removed nodes.");
   }, "Element with descendants set to " . format_value($argument));
 ;
   test(function() use($check,$argument) {global $document;
@@ -203,7 +203,7 @@ foreach ($testArgs as $aValue) {
     $df->textContent = $argument;
     $check($df);
     assert_equals($child->childNodes->length, 3,
-                  "Should not have changed the internal structure of the removed nodes->");
+                  "Should not have changed the internal structure of the removed nodes.");
   }, "DocumentFragment with descendants set to " . format_value($argument));
 }
 ;

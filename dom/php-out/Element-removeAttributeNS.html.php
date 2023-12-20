@@ -11,5 +11,5 @@ test(function() {global $document;global $XML;
   $el->removeAttributeNS($XML, "a:bb");
   assert_equals($el->attributes->length, 1);
   attr_is($el->attributes[0], "pass", "bb", $XML, "a", "a:bb");
-}, "removeAttributeNS should take a local name->");
+}, "removeAttributeNS should take a local name.");
 ;

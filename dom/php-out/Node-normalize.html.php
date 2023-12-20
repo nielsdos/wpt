@@ -77,5 +77,5 @@ test(function() {global $document;
   assert_array_equals($div->childNodes, $expected);
   $div->normalize();
   assert_array_equals($div->childNodes, $expected);
-}, "Non-text nodes with empty textContent values->");
+}, "Non-text nodes with empty textContent values.");
 ;

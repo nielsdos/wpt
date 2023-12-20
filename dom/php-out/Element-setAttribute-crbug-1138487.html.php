@@ -18,5 +18,5 @@ test(function(){global $document;
   assert_equals($el->getAttribute('labelxql'), 'abc');
   assert_equals($el->getAttribute('_valueXQL'), 'def');
   assert_equals($el->getAttribute('_valuexql'), 'def');
-}, "Attributes first seen in mixed ASCII case should not be corrupted->");
+}, "Attributes first seen in mixed ASCII case should not be corrupted.");
 ;

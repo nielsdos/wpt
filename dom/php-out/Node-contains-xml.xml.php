@@ -9,10 +9,10 @@ test(function() {global $document;
   assert_throws_js(TypeError, function() {global $document;;
     $document->contains(9);
   });
-}, "Should throw TypeError if the arguments are wrong->");*/
+}, "Should throw TypeError if the arguments are wrong.");*/
 ;
 test(function() {global $document;
-  assert_equals($document->contains(null), false, "Document shouldn't contain null->");
+  assert_equals($document->contains(null), false, "Document shouldn't contain null.");
 }, "contains(null) should be false");
 ;
 test(function() {global $document;
@@ -24,7 +24,7 @@ test(function() {global $document;
 test(function() {global $document;
   //$tb = $document->getElementById("testbutton");
   $tb = $document->getElementsByTagName("input")[0];
-  assert_equals($tb->contains($tb), true, "Element should contain itself->");
+  assert_equals($tb->contains($tb), true, "Element should contain itself.");
   assert_equals($document->contains($tb), true, "Document should contain element in it!");
   assert_equals($document->documentElement->contains($tb), true, "Element should contain element in it!");
 }, "contains with a button");
@@ -33,10 +33,10 @@ test(function() {global $document;
   //$link = $document->getElementById("link");
   $link = $document->getElementsByTagName("a")[0];
   $text = $link->firstChild;
-  assert_equals($document->contains($text), true, "Document should contain a text node in it->");
-  assert_equals($link->contains($text), true, "Element should contain a text node in it->");
-  assert_equals($text->contains($text), true, "Text node should contain itself->");
-  assert_equals($text->contains($link), false, "text node shouldn't contain its parent->");
+  assert_equals($document->contains($text), true, "Document should contain a text node in it.");
+  assert_equals($link->contains($text), true, "Element should contain a text node in it.");
+  assert_equals($text->contains($text), true, "Text node should contain itself.");
+  assert_equals($text->contains($link), false, "text node shouldn't contain its parent.");
 }, "contains with a text node");
 ;
 test(function() {global $document;
@@ -53,16 +53,16 @@ test(function() {global $document;
     assert_equals($df->contains($df->firstChild), true, "Document fragment should contain its child");
     assert_equals($df->contains($df->firstChil$d->firstChild), true,;
        "Document fragment should contain its descendant");
-    assert_equals($df->contains($df), true, "Document fragment should contain itself->");
+    assert_equals($df->contains($df), true, "Document fragment should contain itself.");
   };
 }, "contains with a document fragment");
 ;*/
 test(function() {global $document;
   $d = DOM\HTMLDocument::createEmpty();
   assert_equals($document->contains($d), false,
-     "Document shouldn't contain another \$document->");
+     "Document shouldn't contain another \$document.");
   assert_equals($document->contains($d->createElement("div")), false,
-     "Document shouldn't contain an element from another \$document->");
+     "Document shouldn't contain an element from another \$document.");
   assert_equals($document->contains($d->documentElement), false,
-     "Document shouldn't contain an element from another \$document->");
+     "Document shouldn't contain an element from another \$document.");
 }, "contains with another document");
