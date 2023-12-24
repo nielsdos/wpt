@@ -33,8 +33,8 @@ function assert_equals($a, $b, string $msg = "") {
         $a = $a->wholeText;
     }
     if ($a !== $b) {
-        if (is_string($a) && strlen($a) > 30) {
-            $a = substr($a, 0, 30) . "...";
+        if (is_string($a) && strlen($a) > 50) {
+            $a = substr($a, 0, 50) . "...";
         }
         try {
             $msg = "Assertion failed ($msg): \"$a\" === \"$b\"";
@@ -43,6 +43,12 @@ function assert_equals($a, $b, string $msg = "") {
             var_dump($a, $b);
         }
         throw new Error($msg);
+    }
+}
+
+function assert_in_array($a, $b) {
+    if (!in_array($a, $b)) {
+        throw new Error("Assertion failed: $a in " . json_encode($b));
     }
 }
 
