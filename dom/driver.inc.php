@@ -33,15 +33,15 @@ function assert_equals($a, $b, string $msg = "") {
         $a = $a->wholeText;
     }
     if ($a !== $b) {
-        if (is_string($a) && strlen($a) > 50) {
-            $a = substr($a, 0, 50) . "...";
+        if (is_string($a) && strlen($a) > 30) {
+            $a_short = substr($a, 0, 30) . "...";
         }
         try {
-            $msg = "Assertion failed ($msg): \"$a\" === \"$b\"";
-        } catch (Throwable $e) {
+            $msg = "Assertion failed ($msg): \"$a_short\" === \"$b\"";
+        } catch (Throwable) {
             $msg = "Assertion failed ($msg): equality";
-            var_dump($a, $b);
         }
+        var_dump($a, $b);
         throw new Error($msg);
     }
 }
