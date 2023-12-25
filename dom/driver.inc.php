@@ -35,6 +35,8 @@ function assert_equals($a, $b, string $msg = "") {
     if ($a !== $b) {
         if (is_string($a) && strlen($a) > 30) {
             $a_short = substr($a, 0, 30) . "...";
+        } else {
+            $a_short = $a;
         }
         try {
             $msg = "Assertion failed ($msg): \"$a_short\" === \"$b\"";

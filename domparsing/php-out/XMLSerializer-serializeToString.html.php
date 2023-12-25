@@ -47,11 +47,20 @@ test(function() {
   assert_equals(xmlSerialize($root), '<root xmlns="urn:bar"><outer xmlns=""><inner>value1</inner></outer></root>');
 }, 'Check if there is no redundant empty namespace declaration.');
 
+// https://github.com/w3c/DOM-Parsing/issues/47
 test(function() {
+  // assert_equals(xmlSerialize(parse('<root><child xmlns=""/></root>')),
+                // '<root><child/></root>');
+  //assert_equals(xmlSerialize(parse('<root xmlns=""><child xmlns=""/></root>')),
+  //              '<root><child/></root>');
+  // assert_equals(xmlSerialize(parse('<root xmlns="u1"><child xmlns="u1"/></root>')),
+  // '<root xmlns="u1"><child/></root>');
+  assert_equals(xmlSerialize(parse('<root><child xmlns=""/></root>')),
+                '<root><child xmlns=""/></root>');
   assert_equals(xmlSerialize(parse('<root xmlns=""><child xmlns=""/></root>')),
-                '<root><child/></root>');
+               '<root xmlns=""><child xmlns=""/></root>');
   assert_equals(xmlSerialize(parse('<root xmlns="u1"><child xmlns="u1"/></root>')),
-                '<root xmlns="u1"><child/></root>');
+                '<root xmlns="u1"><child xmlns="u1"/></root>');
 }, 'Check if redundant xmlns="..." is dropped.');
 
 test(function() {
@@ -92,12 +101,14 @@ test(function() {
                 'Should choose the nearest prefix');
 }, 'Check if an attribute with namespace and no prefix is serialized with the nearest-declared prefix');
 
+// https://github.com/w3c/DOM-Parsing/issues/45
 test(function() {
   $root = parse('<el1 xmlns:p="u1" xmlns:q="u1"><el2 xmlns:q="u2"/></el1>');
   $root->firstChild->setAttributeNS('u1', 'name', 'v');
+  // assert_equals(xmlSerialize($root),
+                // '<el1 xmlns:p="u1" xmlns:q="u1"><el2 xmlns:q="u2" q:name="v"/></el1>');
   assert_equals(xmlSerialize($root),
-                '<el1 xmlns:p="u1" xmlns:q="u1"><el2 xmlns:q="u2" q:name="v"/></el1>');
-  // Maybe this is a specification error.
+                '<el1 xmlns:p="u1" xmlns:q="u1"><el2 xmlns:q="u2" p:name="v"/></el1>');
 }, 'Check if an attribute with namespace and no prefix is serialized with the nearest-declared prefix even if the prefix is assigned to another namespace.');
 
 test(function() {
@@ -112,11 +123,14 @@ test(function() {
                 '<r xmlns:xx="uri"><b xx:name="value"/></r>');
 }, 'Check if the prefix of an attribute is replaced with another existing prefix mapped to the same namespace URI.');
 
+// https://github.com/w3c/DOM-Parsing/issues/29
 test(function() {
   $root = parse('<r xmlns:xx="uri"></r>');
   $root->setAttributeNS('uri2', 'p:name', 'value');
+  // assert_equals(xmlSerialize($root),
+                // '<r xmlns:xx="uri" xmlns:ns1="uri2" ns1:name="value"/>');
   assert_equals(xmlSerialize($root),
-                '<r xmlns:xx="uri" xmlns:ns1="uri2" ns1:name="value"/>');
+                '<r xmlns:xx="uri" xmlns:p="uri2" p:name="value"/>');
 }, 'Check if the prefix of an attribute is NOT preserved in a case where neither its prefix nor its namespace URI is not already used.');
 
 test(function() {
@@ -178,6 +192,14 @@ test(function() {
   assert_equals(xmlSerialize($root), '<root xmlns:p="uri2"><p:child xmlns:p="uri1"/></root>');
 }, 'Check if start tag serialization applied the original prefix even if it is declared in an ancestor element.');
 
+// https://github.com/w3c/DOM-Parsing/issues/52
+test(function() {
+  // assert_equals(xmlSerialize(parse('<root xmlns:x="uri1"><table xmlns="uri1"></table></root>')),
+      // '<root xmlns:x="uri1"><x:table xmlns="uri1"/></root>');
+  assert_equals(xmlSerialize(parse('<root xmlns:x="uri1"><table xmlns="uri1"></table></root>')),
+      '<root xmlns:x="uri1"><table xmlns="uri1"/></root>');
+}, 'Check if start tag serialization does NOT apply the default namespace if its namespace is declared in an ancestor.');
+
 test(function() {
   $root = parse('<root><child1/><child2/></root>');
   $root->firstChild->setAttributeNS('uri1', 'attr1', 'value1');
@@ -186,12 +208,14 @@ test(function() {
   assert_equals(xmlSerialize($root), '<root><child1 xmlns:ns1="uri1" ns1:attr1="value1" xmlns:ns2="uri2" ns2:attr2="value2"/><child2 xmlns:ns3="uri3" ns3:attr3="value3"/></root>');
 }, 'Check if generated prefixes match to "ns${index}".');
 
+// https://github.com/w3c/DOM-Parsing/issues/44
+// According to 'DOM Parsing and Serialization' draft as of 2018-12-11,
+// 'generate a prefix' result can conflict with an existing xmlns:ns* declaration.
 test(function() {
   $root = parse('<root xmlns:ns2="uri2"><child xmlns:ns1="uri1"/></root>');
   $root->firstChild->setAttributeNS('uri3', 'attr1', 'value1');
-  // According to 'DOM Parsing and Serialization' draft as of 2018-12-11,
-  // 'generate a prefix' result can conflict with an existing xmlns:ns* declaration.
-  assert_equals(xmlSerialize($root), '<root xmlns:ns2="uri2"><child xmlns:ns1="uri1" xmlns:ns1="uri3" ns1:attr1="value1"/></root>');
+  // assert_equals(xmlSerialize($root), '<root xmlns:ns2="uri2"><child xmlns:ns1="uri1" xmlns:ns1="uri3" ns1:attr1="value1"/></root>');
+  assert_equals(xmlSerialize($root), '<root xmlns:ns2="uri2"><child xmlns:ns1="uri1" xmlns:ns2="uri3" ns2:attr1="value1"/></root>');
 }, 'Check if "ns1" is generated even if the element already has xmlns:ns1.');
 
 test(function() {
