@@ -17,6 +17,9 @@ function parse($xmlString) {
 }
 
 function xmlSerialize($node) {
+  if ($node instanceof DOM\Document) {
+    $node = $node->documentElement;
+  }
   return $node->ownerDocument->saveXML($node);
 }
 
@@ -24,6 +27,11 @@ test(function() {
   $root = createXmlDoc()->documentElement;
   assert_equals(xmlSerialize($root), '<root><child1>value1</child1></root>');
 }, 'check XMLSerializer.serializeToString method could parsing xmldoc to string');
+
+test(function() {
+  $root = parse('<html><head></head><body><div></div><span></span></body></html>');
+  assert_equals(xmlSerialize($root->ownerDocument), '<html><head/><body><div/><span/></body></html>');
+}, 'check XMLSerializer.serializeToString method could parsing document to string');
 
 test(function() {
   $root = createXmlDoc()->documentElement;
@@ -195,3 +203,11 @@ test(function() {
   $root2->setAttributeNS('http://www.w3.org/1999/xlink', 'xl:type', 'v');
   assert_equals(xmlSerialize($root2), '<root xmlns:xl="http://www.w3.org/1999/xlink" xl:type="v"/>');
 }, 'Check if no special handling for XLink namespace unlike HTML serializer.');
+
+test(function() {
+  $document = DOM\HTMLDocument::createEmpty();
+  $root = $document->createDocumentFragment();
+  $root->append($document->createElement('div'));
+  $root->append($document->createElement('span'));
+  assert_equals(xmlSerialize($root), '<div xmlns="http://www.w3.org/1999/xhtml"></div><span xmlns="http://www.w3.org/1999/xhtml"></span>');
+}, 'Check if document fragment serializes.');
