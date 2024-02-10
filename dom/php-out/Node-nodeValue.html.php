@@ -41,20 +41,26 @@ test(function() {global $document;
 test(function() {global $document;
   $the_link = $document->createElement("a");
   assert_equals($the_link->nodeValue, null);
-  $the_link->nodeValue = "foo";
+  try {
+    $the_link->nodeValue = "foo";
+  } catch (Error) {}
   assert_equals($the_link->nodeValue, null);
 }, "Element->nodeValue");
 ;
 test(function() {global $document;
   assert_equals($document->nodeValue, null);
-  $document->nodeValue = "foo";
+  try {
+    $document->nodeValue = "foo";
+  } catch (Error) {}
   assert_equals($document->nodeValue, null);
 }, "Document->nodeValue");
 ;
 test(function() {global $document;
   $the_frag = $document->createDocumentFragment();
   assert_equals($the_frag->nodeValue, null);
-  $the_frag->nodeValue = "foo";
+  try {
+    $the_frag->nodeValue = "foo";
+  } catch (Error) {}
   assert_equals($the_frag->nodeValue, null);
 }, "DocumentFragment->nodeValue");
 ;
