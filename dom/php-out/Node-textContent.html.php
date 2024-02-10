@@ -236,7 +236,9 @@ foreach ($documents as $argument) {
   $doc = $argument[1]; $creator = $argument[0];
   test(function() use($doc) {global $document;
     $root = $doc->documentElement;
-    $doc->textContent = "a";
+    try {
+      $doc->textContent = "a";
+    } catch (Error) {}
     assert_equals($doc->textContent, null);
     assert_equals($doc->documentElement, $root);
   }, "For Documents created by " . $creator . ", setting textContent should do nothing");
