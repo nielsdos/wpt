@@ -5,7 +5,7 @@ import os
 import platform
 import subprocess
 import sys
-from shutil import which
+from shutil import copyfile, which
 from typing import ClassVar, Tuple, Type
 
 wpt_root = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
@@ -387,14 +387,6 @@ class FirefoxAndroid(BrowserSetup):
                 logger.info("Unable to find or install geckodriver, skipping wdspec tests")
                 kwargs["test_types"].remove("wdspec")
 
-        for device_serial in kwargs["device_serial"]:
-            if device_serial.startswith("emulator-"):
-                # We're running on an emulator so ensure that's set up
-                android.start(logger,
-                              reinstall=False,
-                              device_serial=device_serial,
-                              prompt=kwargs["prompt"])
-
         if kwargs["adb_binary"] is None:
             if "ADB_PATH" not in os.environ:
                 adb_path = os.path.join(android.get_paths(None)["sdk"],
@@ -406,18 +398,56 @@ class FirefoxAndroid(BrowserSetup):
         self._logcat = AndroidLogcat(kwargs["adb_binary"], base_path=kwargs["logcat_dir"])
 
         for device_serial in kwargs["device_serial"]:
+            if device_serial.startswith("emulator-"):
+                # We're running on an emulator so ensure that's set up
+                android.start(logger,
+                              reinstall=False,
+                              device_serial=device_serial,
+                              prompt=kwargs["prompt"])
+
+        for device_serial in kwargs["device_serial"]:
             device = mozdevice.ADBDeviceFactory(adb=kwargs["adb_binary"],
                                                 device=device_serial)
             self._logcat.start(device_serial)
+            max_retries = 5
+            last_exception = None
             if self.browser.apk_path:
                 device.uninstall_app(app)
-                device.install_app(self.browser.apk_path, timeout=600)
+                for i in range(max_retries + 1):
+                    logger.info(f"Installing {app} on {device_serial} "
+                                f"attempt {i + 1}/{max_retries + 1}")
+                    try:
+                        # Temporarily replace mozdevice function with custom code
+                        # that passes in the `--no-incremental` option
+                        cmd = ["install", "--no-incremental", self.browser.apk_path]
+                        logger.debug(" ".join(cmd))
+                        data = device.command_output(cmd, timeout=120)
+                        if data.find("Success") == -1:
+                            raise mozdevice.ADBError(f"Install failed for {self.browser.apk_path}."
+                                                     f" Got: {data}")
+                    except Exception as e:
+                        last_exception = e
+                    else:
+                        break
+                else:
+                    assert last_exception is not None
+                    raise WptrunError(f"Failed to install {app} on device {device_serial} "
+                                      f"after {max_retries} retries") from last_exception
             elif not device.is_app_installed(app):
-                raise WptrunError("app %s not installed on device %s" %
-                                  (app, device_serial))
+                raise WptrunError(f"app {app} not installed on device {device_serial}")
+
 
     def teardown(self):
+        from . import android
+
         if hasattr(self, "_logcat"):
+            emulator_log = os.path.join(android.get_paths(None)["sdk"],
+                                        ".android",
+                                        "emulator.log")
+            if os.path.exists(emulator_log):
+                dest_path = os.path.join(self._logcat.base_path, "emulator.log")
+                copyfile(emulator_log, dest_path)
+
             self._logcat.stop()
 
 
@@ -473,6 +503,9 @@ class Chrome(BrowserSetup):
                 kwargs["webdriver_binary"] = webdriver_binary
             else:
                 raise WptrunError("Unable to locate or install matching ChromeDriver binary")
+        if kwargs["headless"] is None and not kwargs["debug_test"]:
+            kwargs["headless"] = True
+            logger.info("Running in headless mode, pass --no-headless to disable")
         if browser_channel in self.experimental_channels:
             # HACK(Hexcles): work around https://github.com/web-platform-tests/wpt/issues/16448
             kwargs["webdriver_args"].append("--disable-build-check")
@@ -696,53 +729,6 @@ class EdgeChromium(BrowserSetup):
             kwargs["binary_args"].append("--no-sandbox")
 
 
-class Edge(BrowserSetup):
-    name = "edge"
-    browser_cls = browser.Edge
-
-    def install(self, channel=None):
-        raise NotImplementedError
-
-    def setup_kwargs(self, kwargs):
-        if kwargs["webdriver_binary"] is None:
-            webdriver_binary = self.browser.find_webdriver()
-
-            if webdriver_binary is None:
-                raise WptrunError("""Unable to find WebDriver and we aren't yet clever enough to work out which
-version to download. Please go to the following URL and install the correct
-version for your Edge/Windows release somewhere on the %PATH%:
-
-https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
-""")
-            kwargs["webdriver_binary"] = webdriver_binary
-
-
-class EdgeWebDriver(Edge):
-    name = "edge_webdriver"
-    browser_cls = browser.EdgeWebDriver
-
-
-class InternetExplorer(BrowserSetup):
-    name = "ie"
-    browser_cls = browser.InternetExplorer
-
-    def install(self, channel=None):
-        raise NotImplementedError
-
-    def setup_kwargs(self, kwargs):
-        if kwargs["webdriver_binary"] is None:
-            webdriver_binary = self.browser.find_webdriver()
-
-            if webdriver_binary is None:
-                raise WptrunError("""Unable to find WebDriver and we aren't yet clever enough to work out which
-version to download. Please go to the following URL and install the driver for Internet Explorer
-somewhere on the %PATH%:
-
-https://selenium-release.storage.googleapis.com/index.html
-""")
-            kwargs["webdriver_binary"] = webdriver_binary
-
-
 class Safari(BrowserSetup):
     name = "safari"
     browser_cls = browser.Safari
@@ -894,9 +880,6 @@ product_setup = {
     "chromium": Chromium,
     "content_shell": ContentShell,
     "edgechromium": EdgeChromium,
-    "edge": Edge,
-    "edge_webdriver": EdgeWebDriver,
-    "ie": InternetExplorer,
     "safari": Safari,
     "servo": Servo,
     "servodriver": ServoWebDriver,

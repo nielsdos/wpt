@@ -4,7 +4,7 @@ components:
     workerType: ci
     schedulerId: taskcluster-github
     deadline: "24 hours"
-    image: webplatformtests/wpt:0.56
+    image: webplatformtests/wpt:0.57
     maxRunTime: 7200
     artifacts:
       public/results:
@@ -188,6 +188,12 @@ tasks:
                 - trigger-push
             - vars:
                 browser: chrome
+                channel: canary
+              use:
+                - trigger-master
+                - trigger-push
+            - vars:
+                browser: chrome
                 channel: dev
               use:
                 - trigger-master
@@ -279,6 +285,12 @@ tasks:
                 channel: nightly
               use:
                 - trigger-daily
+                - trigger-push
+            - vars:
+                browser: chrome
+                channel: canary
+              use:
+                - trigger-master
                 - trigger-push
             - vars:
                 browser: chrome
@@ -545,6 +557,7 @@ tasks:
         - wpt-base
         - trigger-pr
         - browser-firefox
+        - browser-firefox_android
       command: ./tools/ci/ci_wptrunner_infrastructure.sh
       install:
         - python3-pip
@@ -556,6 +569,7 @@ tasks:
         browser:
           - firefox
           - chrome
+          - firefox_android
         channel: experimental
         xvfb: true
         hosts: false
