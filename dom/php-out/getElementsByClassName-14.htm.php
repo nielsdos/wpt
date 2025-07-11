@@ -8,7 +8,7 @@ test(function()  {global $document;
 });
 ;
 test(function()  {global $document;
-  assert_array_equals($document->getElementsByClassName("\u212a"),
+  assert_array_equals($document->getElementsByClassName("\u{212a}"),
                       [$document->getElementById("kelvin")]);
 }, 'Unicode-case should be sensitive even in quirks mode');
   ;
