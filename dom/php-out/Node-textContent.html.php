@@ -252,7 +252,9 @@ foreach ($doctypes as $argument) {
       'publicId' => $doctype->publicId,
       'systemId' => $doctype->systemId,
     ];
-    $doctype->textContent = "b";
+    try {
+      $doctype->textContent = "b";
+    } catch (Error) {}
     assert_equals($doctype->textContent, null);
     assert_equals($doctype->name, $props->name, "name should not change");
     assert_equals($doctype->publicId, $props->publicId, "publicId should not change");

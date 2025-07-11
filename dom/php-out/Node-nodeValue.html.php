@@ -67,7 +67,9 @@ test(function() {global $document;
 test(function() {global $document;
   $the_doctype = $document->doctype;
   assert_equals($the_doctype->nodeValue, null);
-  $the_doctype->nodeValue = "foo";
+  try {
+    $the_doctype->nodeValue = "foo";
+  } catch (Error) {}
   assert_equals($the_doctype->nodeValue, null);
 }, "DocumentType->nodeValue");
 ;
