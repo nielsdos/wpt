@@ -2,7 +2,7 @@
 
 function translate_file(string $filename) {
     $contents = file_get_contents($filename);
-    $dom = DOM\HTMLDocument::createFromString($contents);
+    $dom = Dom\HTMLDocument::createFromString($contents);
     foreach ($dom->getElementsByTagName("script") as $script) {
         if (!$script->hasAttribute("src")) {
             $script = $script->textContent;
@@ -38,7 +38,12 @@ function translate_file(string $filename) {
     var_dump($arguments);
 
     $arguments_as_vars = implode(', ', array_map(fn($s) => "\$$s", array_keys($arguments)));
-    $php = str_replace("test(function() {", "test(function() use ($arguments_as_vars) {global \$document;", $php);
+    if (strlen($arguments_as_vars) === 0) {
+        $use_list = "";
+    } else {
+        $use_list = "use ($arguments_as_vars)";
+    }
+    $php = str_replace("test(function() {", "test(function() $use_list {global \$document;", $php);
 
     $lines = [];
     foreach (explode("\n", $php) as $line) {
