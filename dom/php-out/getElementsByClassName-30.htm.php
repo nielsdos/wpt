@@ -87,9 +87,9 @@ $document = Dom\HTMLDocument::createFromString($content, LIBXML_NOERROR);
                 "VAR"];
 ;
                 $collection = $document->getElementsByClassName("foo");
-                for ($x = 0; $x < $collection->length; $x++);
-                {;
+                for ($x = 0; $x < $collection->length; $x++)
+                {
                     assert_equals($collection[$x]->nodeName, $arrElements[$x]);
-                };
+                }
 }, "big element listing");
         ;
