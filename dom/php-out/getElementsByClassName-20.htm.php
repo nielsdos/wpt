@@ -1,0 +1,22 @@
+<?php define('undefined', 'undefined');require __DIR__.'/../driver.inc.php';
+$content = file_get_contents(__DIR__."/../nodes/getElementsByClassName-20.htm");
+$document = Dom\HTMLDocument::createFromString($content);
+;
+            test(function()
+            { global $document;
+                $collection = $document->getElementsByClassName("text");
+                assert_equals($collection->length, 4);
+                $newDiv = $document->createElement("div");
+                $newDiv->setAttribute("class", "text");
+                $newDiv->innerHTML = "text newDiv";
+                //$document->getElementsByTagName("table")[0]->tBodies[0]->rows[0]->cells[0]->appendChild($newDiv);
+                $document->querySelector('table > tbody > tr > td')->appendChild($newDiv);
+;
+                assert_equals($collection->length, 5);
+                assert_equals($collection[0]->parentNode->nodeName, "DIV");
+                assert_equals($collection[1]->parentNode->nodeName, "DIV");
+                assert_equals($collection[2]->parentNode->nodeName, "TABLE");
+                assert_equals($collection[3]->parentNode->nodeName, "TD");
+                assert_equals($collection[4]->parentNode->nodeName, "TR");
+            }, "get elements in document then add element to collection");
+        ;

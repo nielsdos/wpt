@@ -1,0 +1,17 @@
+<?php define('undefined', 'undefined');require __DIR__.'/../driver.inc.php';
+$content = file_get_contents(__DIR__."/../nodes/getElementsByClassName-whitespace-class-names.html");
+$document = Dom\HTMLDocument::createFromString($content, LIBXML_NOERROR);
+;
+"use strict";
+;
+$spans = $document->querySelectorAll("span");
+;
+foreach ($spans as $span) {;
+  test(function() use($span) { global $document;
+    $className = $span->getAttribute("class");
+    //assert_equals(strlen($className), 1, "Sanity check: the class name was retrieved and is a single character");
+    $shouldBeSpan = $document->getElementsByClassName($className);
+    assert_array_equals($shouldBeSpan, [$span]);
+  }, "Passing a {$span->textContent} to getElementsByClassName still finds the span");
+};
+;

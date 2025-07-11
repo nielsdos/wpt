@@ -2,7 +2,11 @@
 
 function translate_file(string $filename) {
     $contents = file_get_contents($filename);
-    $dom = Dom\HTMLDocument::createFromString($contents);
+    if (str_ends_with($filename, '.xml')) {
+        $dom = Dom\XMLDocument::createFromString($contents);
+    } else {
+        $dom = Dom\HTMLDocument::createFromString($contents);
+    }
     foreach ($dom->getElementsByTagName("script") as $script) {
         if (!$script->hasAttribute("src")) {
             $script = $script->textContent;
@@ -75,8 +79,12 @@ function translate_file(string $filename) {
     $php = preg_replace("/(\\$[a-zA-Z0-9_]+)->innerHTML/", "innerHTML($1)", $php);
 
     $preamble = "<?php define('undefined', 'undefined');require __DIR__.'/../driver.inc.php';\n";
-    $preamble .= "\$html = file_get_contents(__DIR__.\"/../$filename\");\n";
-    $preamble .= '$document = DOM\HTMLDocument::createFromString($html);' . "\n";
+    $preamble .= "\$content = file_get_contents(__DIR__.\"/../$filename\");\n";
+    if (str_ends_with($filename, '.xml')) {
+        $preamble .= '$document = Dom\XMLDocument::createFromString($content);' . "\n";
+    } else {
+        $preamble .= '$document = Dom\HTMLDocument::createFromString($content);' . "\n";
+    }
 
     @mkdir("php-out");
     $filename = basename($filename);

@@ -1,0 +1,11 @@
+<?php define('undefined', 'undefined');require __DIR__.'/../driver.inc.php';
+$content = file_get_contents(__DIR__."/../nodes/getElementsByClassName-13.htm");
+$document = Dom\HTMLDocument::createFromString($content);
+test(function()  {global $document;
+                 $collection = $document->body->getElementsByClassName("a");
+                 $ele = $document->createElement("x-y-z");
+                 $ele->className = "a";
+                 $document->body->appendChild($ele);
+                 assert_array_equals($collection, [$ele]);
+               });
+  ;

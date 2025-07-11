@@ -1,5 +1,5 @@
 <?php
-function test($callback, $name) {
+function test($callback, $name = "Main test") {
     try {
         $callback();
         echo "\033[32;1mPASS\033[0m $name\n";
