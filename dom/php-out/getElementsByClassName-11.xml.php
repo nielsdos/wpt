@@ -3,7 +3,6 @@ $content = file_get_contents(__DIR__."/../nodes/getElementsByClassName-11.xml");
 $document = Dom\XMLDocument::createFromString($content);
 ;
    test(function()  {global $document;
-       throw new Error('test');
           $collection = $document->getElementsByClassName("a");
           $test = $document->getElementById("tests")->children;
           assert_array_equals($collection, [$test[0], $test[1], $test[4]]);
